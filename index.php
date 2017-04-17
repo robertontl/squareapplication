@@ -37,55 +37,74 @@
 </body>
 
 <script>
-    var squareApplication = {
-        square: document.getElementById('square'),
-        properties: {
-            size: [],
-            color: []
-        },
-        setSize: function(setSize) {
-            this.properties.size.push(setSize);
-            this.square.style.width = this.properties.size;
-            this.square.style.height = this.properties.size;
-        },
-        setColor: function(setColor) {
-            this.properties.color.push(setColor);
-            this.square.style.background = this.properties.color;
-        },
-        draw: function() {
-            if ($(document.getElementById('square')).is( ":hidden" ))
-            {
-                $(document.getElementById('square')).slideDown( "slow" );
-            }
-            else
-            {
-                $(document.getElementById('square')).hide();
-            }
-        },
-        bounce: function() {
-            var squareElement = document.getElementById('square');
-            var initialTopPosition = document.getElementById('square').style.getPropertyValue('top');
-            var changedPosition = 0;
-            var id = setInterval(move, 10);
-            function move() {
-                if (changedPosition == 50)
+    (function () {
+        var squareApplication = {
+            square: $('#square')[0],
+            properties: {
+                size: [],
+                color: []
+            },
+            setSize: function(setSize) {
+                this.properties.size.push(setSize);
+                $(this.square).css('width', this.properties.size);
+                $(this.square).css('height', this.properties.size);
+            },
+            setColor: function(setColor) {
+                this.properties.color.push(setColor);
+                $(this.square).css('background', this.properties.color);
+            },
+            draw: function() {
+                if ($(squareApplication.square).is( ":hidden" ))
                 {
-                    clearInterval(id);
+                    $(squareApplication.square).slideDown( "slow" );
                 }
                 else
                 {
-                    changedPosition++;
-                    squareElement.style.top = initialTopPosition + changedPosition + 'px';
+                    $(squareApplication.square).hide();
                 }
+            },
+            bounce: function() {
+                var initialTopPosition = parseInt($(squareApplication.square).css('top'),10);
+                var changedPosition = 0;
+                var id = setInterval(move, 10);
+                function move() {
+                    if (changedPosition == 50)
+                    {
+                        clearInterval(id);
+                    }
+                    else
+                    {
+                        changedPosition++;
+                        // TBD: Bugfix for behavior of top value
+                        $(squareApplication.square).css('top', initialTopPosition + changedPosition + 'px');
+                    }
+                }
+            },
+            handlers: {
+                '#draw click':          'draw',
+                '#square mouseover':    'bounce'
+            },
+            registerHandlers: function() {
+                var that = this;
+                $.each(this.handlers, function(key, value) {
+                    var split = key.split(" "),
+                    element = split[0],
+                    trigger = split[1];
+                    $(document).delegate(element, trigger, that[value]);
+                })
+            },
+            init: function() {
+                squareApplication.setSize('150px');
+                squareApplication.setColor('cornflowerblue');
             }
-        }
-    };
+        };
 
-    squareApplication.setSize('150px');
-    squareApplication.setColor('cornflowerblue');
-
-    document.getElementById("draw").addEventListener("click", squareApplication.draw);
-    document.getElementById("square").addEventListener("mouseover", squareApplication.bounce);
+        $(document).ready(function() {
+            squareApplication.init();
+            squareApplication.registerHandlers();
+            console.log(parseInt($(squareApplication.square).css('top'),10));
+        });
+    })();
 </script>
 </html>
 
