@@ -1,31 +1,32 @@
-(function () {
+(function ($, document) {
+    'use strict';
     var squareApplication = {
-        square: $('#square')[0],
+        square: $('#square'),
         properties: {
             size: [],
             color: []
         },
         setSize: function(setSize) {
-            this.properties.size.push(setSize);
-            $(this.square).css('width', this.properties.size);
-            $(this.square).css('height', this.properties.size);
+            squareApplication.properties.size.push(setSize);
+            squareApplication.square.css('width', squareApplication.properties.size);
+            squareApplication.square.css('height', squareApplication.properties.size);
         },
         setColor: function(setColor) {
-            this.properties.color.push(setColor);
-            $(this.square).css('background', this.properties.color);
+            squareApplication.properties.color.push(setColor);
+            squareApplication.square.css('background', squareApplication.properties.color);
         },
         draw: function() {
-            if ($(squareApplication.square).is( ":hidden" ))
+            if (squareApplication.square.is( ":hidden" ))
             {
-                $(squareApplication.square).slideDown( "slow" );
+                squareApplication.square.slideDown( "slow" );
             }
             else
             {
-                $(squareApplication.square).hide();
+                squareApplication.square.hide();
             }
         },
         bounce: function() {
-            var initialTopPosition = parseInt($(squareApplication.square).css('top'),10);
+            var initialTopPosition = parseInt(squareApplication.square.css('top'),10);
             var changedPosition = 0;
             var id = setInterval(move, 10);
             function move() {
@@ -37,7 +38,7 @@
                 {
                     changedPosition++;
                     // TBD: Bugfix for behavior of top value
-                    $(squareApplication.square).css('top', initialTopPosition + changedPosition + 'px');
+                    squareApplication.square.css('top', initialTopPosition + changedPosition + 'px');
                 }
             }
         },
@@ -57,11 +58,11 @@
         init: function() {
             squareApplication.setSize('150px');
             squareApplication.setColor('cornflowerblue');
+            squareApplication.registerHandlers();
         }
     };
 
     $(document).ready(function() {
         squareApplication.init();
-        squareApplication.registerHandlers();
     });
-})();
+})(jQuery, document);
